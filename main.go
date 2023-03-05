@@ -36,6 +36,8 @@ func main() {
 	router.GET("/query_map", study.GetQueryMapData)
 	router.POST("/user_add", study.UserAdd)
 	router.POST("/user_add_bind", study.UserAddBind)
+	router.POST("/file_upload", study.FileUpload)
+	router.POST("/file_upload_batch", study.FileUploadBatch)
 
 	router.Run(":9000")
 }

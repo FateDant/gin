@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 func GetQueryData(ctx *gin.Context) {
@@ -61,4 +63,27 @@ func UserAddBind(ctx *gin.Context) {
 	err := ctx.ShouldBind(&user_info)
 	fmt.Println(err)
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "success", "err": err, "user_info": user_info})
+}
+
+func FileUpload(ctx *gin.Context) {
+	file, err := ctx.FormFile("file")
+	timeUnixInt := time.Now().Unix()
+	timeUnixStr := strconv.FormatInt(timeUnixInt, 10) //需要将int转成string类型 不能通过string(int) 转换
+	dst := "upload/" + timeUnixStr + file.Filename
+	ctx.SaveUploadedFile(file, dst)
+	//fmt.Println(file.Filename)
+	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "success", "err": err, "file": file.Filename})
+}
+
+func FileUploadBatch(ctx *gin.Context) {
+	form, err := ctx.MultipartForm()
+	files := form.File["file"]
+
+	for _, file := range files {
+		timeUnixInt := time.Now().Unix()
+		timeUnixStr := strconv.FormatInt(timeUnixInt, 10) //需要将int转成string类型 不能通过string(int) 转换
+		dst := "upload/" + timeUnixStr + file.Filename
+		ctx.SaveUploadedFile(file, dst)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "success", "err": err, "file": files})
 }
