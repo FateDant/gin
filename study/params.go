@@ -87,3 +87,13 @@ func FileUploadBatch(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"code": 200, "msg": "success", "err": err, "file": files})
 }
+
+func RedirectA(ctx *gin.Context) {
+	fmt.Println("这是A")
+	ctx.Redirect(http.StatusFound, "/redirect_b")
+}
+
+func RedirectB(ctx *gin.Context) {
+	fmt.Println("这是B")
+	ctx.String(http.StatusOK, "这是B")
+}

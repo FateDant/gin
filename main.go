@@ -4,6 +4,7 @@ import (
 	"gin/study"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func Hello(ctx *gin.Context) {
@@ -38,6 +39,16 @@ func main() {
 	router.POST("/user_add_bind", study.UserAddBind)
 	router.POST("/file_upload", study.FileUpload)
 	router.POST("/file_upload_batch", study.FileUploadBatch)
+	router.GET("/redirect_a", study.RedirectA)
+	router.GET("/redirect_b", study.RedirectB)
 
-	router.Run(":9000")
+	//router.Run(":9000")
+	s := &http.Server{
+		Addr:         ":9000",
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 5 * time.Second,
+	}
+
+	s.ListenAndServe()
 }
