@@ -42,6 +42,7 @@ func main() {
 	router.GET("/redirect_a", study.RedirectA)
 	router.GET("/redirect_b", study.RedirectB)
 	router.POST("/bind_form", study.BindForm)
+	router.GET("/valid", study.Validate)
 
 	//router.Run(":9000")
 	s := &http.Server{
