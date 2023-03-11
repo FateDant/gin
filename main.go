@@ -41,6 +41,7 @@ func main() {
 	router.POST("/file_upload_batch", study.FileUploadBatch)
 	router.GET("/redirect_a", study.RedirectA)
 	router.GET("/redirect_b", study.RedirectB)
+	router.POST("/bind_form", study.BindForm)
 
 	//router.Run(":9000")
 	s := &http.Server{
