@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gin/middle"
 	"gin/study"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -21,6 +22,7 @@ func Param(ctx *gin.Context) {
 func main() {
 	router := gin.Default()
 	//router := gin.New()
+	router.Use(middle.MiddleWare, middle.MiddleWare2())
 	//router.GET("/", func(context *gin.Context) {
 	//	context.String(200, "hello gin", 123)
 	//})
@@ -32,17 +34,34 @@ func main() {
 	router.GET("/param/:id", Param) //必须传id
 	//router.GET("/param/*id", Param) //非必传
 
-	router.GET("/query", study.GetQueryData)
-	router.GET("/query_arr", study.GetQueryArrData)
-	router.GET("/query_map", study.GetQueryMapData)
-	router.POST("/user_add", study.UserAdd)
-	router.POST("/user_add_bind", study.UserAddBind)
-	router.POST("/file_upload", study.FileUpload)
-	router.POST("/file_upload_batch", study.FileUploadBatch)
-	router.GET("/redirect_a", study.RedirectA)
-	router.GET("/redirect_b", study.RedirectB)
+	query := router.Group("/query")
+	{
+		query.GET("/query", study.GetQueryData)
+		query.GET("/query_arr", study.GetQueryArrData)
+		query.GET("/query_map", study.GetQueryMapData)
+	}
+
+	user := router.Group("/user")
+	{
+		user.POST("/user_add", study.UserAdd)
+		user.POST("/user_add_bind", study.UserAddBind)
+		user.POST("/file_upload", study.FileUpload)
+		user.POST("/file_upload_batch", study.FileUploadBatch)
+	}
+
+	redirect := router.Group("/redirect")
+	{
+		redirect.GET("/redirect_a", study.RedirectA)
+		redirect.GET("/redirect_b", study.RedirectB)
+	}
+
 	router.POST("/bind_form", study.BindForm)
 	router.GET("/valid", study.Validate)
+
+	//局部中间件 BasicAuth
+	router.GET("/auth", gin.BasicAuth(gin.Accounts{
+		"zs": "123456",
+	}), middle.AuthTest)
 
 	//router.Run(":9000")
 	s := &http.Server{
