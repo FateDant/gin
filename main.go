@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gin/gorm"
 	"gin/middle"
 	"gin/study"
 	"github.com/gin-gonic/gin"
@@ -62,6 +63,15 @@ func main() {
 	router.GET("/auth", gin.BasicAuth(gin.Accounts{
 		"zs": "123456",
 	}), middle.AuthTest)
+
+	db := router.Group("/db")
+	{
+		db.GET("/connect", gorm.Connect)
+		db.GET("/migrate", gorm.Migrate)
+		db.GET("/create", gorm.CreateData)
+		db.GET("/query", gorm.QueryData)
+		db.GET("/update", gorm.UpdateData)
+	}
 
 	//router.Run(":9000")
 	s := &http.Server{
