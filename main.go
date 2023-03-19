@@ -71,6 +71,14 @@ func main() {
 		db.GET("/create", gorm.CreateData)
 		db.GET("/query", gorm.QueryData)
 		db.GET("/update", gorm.UpdateData)
+		db.GET("/queryOne", gorm.QueryOneByOne)
+		db.GET("/updateOne", gorm.UpdateOneByOne)
+		db.GET("/deleteOne", gorm.DeleteOneByOne)
+		db.GET("/createOneMore", gorm.CreateOneByMore)
+		db.GET("/queryOneMore", gorm.QueryOneByMore)
+		db.GET("/updateOneByMore", gorm.UpdateOneByMore)
+		db.GET("/createManyToMany", gorm.CreateManyToMany)
+		db.GET("/queryManyToMany", gorm.QueryManyToMany)
 	}
 
 	//router.Run(":9000")

@@ -2,6 +2,7 @@ package gorm
 
 import (
 	"gin/gorm/models"
+	"gin/gorm/models/relate"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -41,10 +42,11 @@ func Migrate(ctx *gin.Context) {
 	defer db.Close()
 
 	//统一加前缀或后缀
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return "pre_" + defaultTableName + "_suf"
-	}
+	//gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+	//	return "pre_" + defaultTableName + "_suf"
+	//}
 
 	//自动迁移，仅仅会创建表，添加列和索引，不会改变现有列的结构或删除列
-	db.AutoMigrate(&models.User{}, &models.GormModel{}, &models.TagModel{})
+	//db.AutoMigrate(&models.User{}, &models.GormModel{}, &models.TagModel{}, &relate.UserMaster{}, &relate.UserSlave{})
+	db.AutoMigrate(&relate.UserMaster{}, &relate.UserSlave{}, &relate.One{}, &relate.More{}, &relate.ManyOne{}, &relate.ManyTwo{})
 }
