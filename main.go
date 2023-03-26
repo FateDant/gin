@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "gin/data_source" //数据库连接
 	"gin/gorm"
 	"gin/middle"
 	"gin/study"
@@ -79,6 +80,29 @@ func main() {
 		db.GET("/updateOneByMore", gorm.UpdateOneByMore)
 		db.GET("/createManyToMany", gorm.CreateManyToMany)
 		db.GET("/queryManyToMany", gorm.QueryManyToMany)
+	}
+
+	db_interface := router.Group("/db_interface")
+	{
+		db_interface.GET("/first", gorm.First)
+		db_interface.GET("/where", gorm.Where)
+		db_interface.GET("/create", gorm.Create)
+		db_interface.GET("/update", gorm.Update)
+		db_interface.GET("/not", gorm.Not)
+		db_interface.GET("/group", gorm.Group)
+		db_interface.GET("/join", gorm.Join)
+		db_interface.GET("/firstInit", gorm.FirstInit)
+	}
+
+	db_errors := router.Group("/db_errors")
+	{
+		db_errors.GET("/errors", gorm.Errors)
+	}
+
+	db_sql := router.Group("/db_sql")
+	{
+		db_sql.GET("/raw", gorm.Raw)
+		db_sql.GET("/exec", gorm.Exec)
 	}
 
 	//router.Run(":9000")
