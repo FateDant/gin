@@ -3,10 +3,13 @@ package main
 import (
 	_ "gin/data_source" //数据库连接
 	"gin/gorm"
+	_ "gin/logs_source" //日志配置
 	"gin/middle"
 	"gin/study"
 	"github.com/gin-gonic/gin"
+	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -22,7 +25,12 @@ func Param(ctx *gin.Context) {
 }
 
 func main() {
+	//config目录  json格式的配置文件 不能写注释！
+
 	router := gin.Default()
+	//创建日志文件
+	file, _ := os.Create("gin.log")
+	gin.DefaultWriter = io.MultiWriter(file, os.Stdout) //写入文件和输出到控制台
 	//router := gin.New()
 	router.Use(middle.MiddleWare, middle.MiddleWare2())
 	//router.GET("/", func(context *gin.Context) {
@@ -103,6 +111,11 @@ func main() {
 	{
 		db_sql.GET("/raw", gorm.Raw)
 		db_sql.GET("/exec", gorm.Exec)
+	}
+
+	log := router.Group("/log")
+	{
+		log.GET("test", study.LogTest)
 	}
 
 	//router.Run(":9000")
