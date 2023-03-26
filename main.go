@@ -6,6 +6,8 @@ import (
 	_ "gin/logs_source" //日志配置
 	"gin/middle"
 	"gin/study"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
@@ -31,6 +33,18 @@ func main() {
 	//创建日志文件
 	file, _ := os.Create("gin.log")
 	gin.DefaultWriter = io.MultiWriter(file, os.Stdout) //写入文件和输出到控制台
+
+	//加密的盐 基于cookie
+	//store := cookie.NewStore([]byte("hallen"))
+
+	//size最大连接数 基于redis
+	store, err := redis.NewStore(10, "tcp", "127.0.0.1:6379", "", []byte("hallen"))
+	if err != nil {
+		panic(err)
+	}
+	//使用session中间件
+	router.Use(sessions.Sessions("gin_session", store))
+
 	//router := gin.New()
 	router.Use(middle.MiddleWare, middle.MiddleWare2())
 	//router.GET("/", func(context *gin.Context) {
@@ -116,6 +130,11 @@ func main() {
 	log := router.Group("/log")
 	{
 		log.GET("test", study.LogTest)
+	}
+
+	session := router.Group("/session")
+	{
+		session.GET("test", study.SessionTest)
 	}
 
 	//router.Run(":9000")
